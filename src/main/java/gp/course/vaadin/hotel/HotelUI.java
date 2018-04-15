@@ -64,6 +64,7 @@ public class HotelUI extends UI {
         layout.addComponents(controls, content);
         
         hotelGrid.removeColumn("url");
+                
         hotelGrid.addColumn(hotel -> "<a href='" + hotel.getUrl() + "'>Go to website</a>",
         		new HtmlRenderer()).setId("url").setCaption("Url");
         hotelGrid.setColumnOrder("name", "address", "rating", "category", "description", "url");
@@ -97,6 +98,7 @@ public class HotelUI extends UI {
     public void updateList() {
     	List<Hotel> hotelList = hotelService.findAll(filterByName.getValue(), filterByAddress.getValue());
     	hotelGrid.setItems(hotelList);
+    	
     }
 
     @WebServlet(urlPatterns = "/*", name = "HotelUIServlet", asyncSupported = true)
