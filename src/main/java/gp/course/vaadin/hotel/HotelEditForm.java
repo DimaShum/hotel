@@ -46,6 +46,7 @@ public class HotelEditForm extends FormLayout {
 		hotelService.save(hotel);
 		ui.updateList();
 		setVisible(false);
+		ui.deleteHotel.setEnabled(false);
 	}
 	
 	public Hotel getHotel() {

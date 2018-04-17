@@ -65,7 +65,7 @@ public class HotelUI extends UI {
         
         hotelGrid.removeColumn("url");
                 
-        hotelGrid.addColumn(hotel -> "<a href='" + hotel.getUrl() + "'>Go to website</a>",
+        hotelGrid.addColumn(hotel -> "<a target='_blank' href='" + hotel.getUrl() + "'>Go to website</a>",
         		new HtmlRenderer()).setId("url").setCaption("Url");
         hotelGrid.setColumnOrder("name", "address", "rating", "category", "description", "url");
         hotelGrid.setWidth(100, Unit.PERCENTAGE);

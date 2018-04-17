@@ -37,8 +37,7 @@ public class HotelService {
 		ArrayList<Hotel> arrayList = new ArrayList<>();
 		for (Hotel hotel : hotels.values()) {
 			try {
-				boolean passesFilter = (stringFilter == null || stringFilter.isEmpty())
-						|| hotel.toString().toLowerCase().contains(stringFilter.toLowerCase());
+				boolean passesFilter = filter(hotel, stringFilter);
 				if (passesFilter) {
 					arrayList.add(hotel.clone());
 				}
@@ -60,10 +59,8 @@ public class HotelService {
 		ArrayList<Hotel> arrayList = new ArrayList<>();
 		for (Hotel hotel : hotels.values()) {
 			try {
-				boolean passesFilter = ((stringFilterByName == null || stringFilterByName.isEmpty())
-						|| hotel.getName().toLowerCase().contains(stringFilterByName.toLowerCase()))
-						&& ((stringFilterByAddress == null || stringFilterByAddress.isEmpty())
-						|| hotel.getAddress().toLowerCase().contains(stringFilterByAddress.toLowerCase()));
+				boolean passesFilter = filter(hotel.getName(), stringFilterByName) &&
+						filter(hotel.getAddress(), stringFilterByAddress);
 						
 				if (passesFilter) {
 					arrayList.add(hotel.clone());
@@ -86,8 +83,7 @@ public class HotelService {
 		ArrayList<Hotel> arrayList = new ArrayList<>();
 		for (Hotel contact : hotels.values()) {
 			try {
-				boolean passesFilter = (stringFilter == null || stringFilter.isEmpty())
-						|| contact.toString().toLowerCase().contains(stringFilter.toLowerCase());
+				boolean passesFilter = filter(contact, stringFilter);
 				if (passesFilter) {
 					arrayList.add(contact.clone());
 				}
@@ -107,6 +103,12 @@ public class HotelService {
 			end = arrayList.size();
 		}
 		return arrayList.subList(start, end);
+	}
+	
+	private boolean filter(Object obj, String stringFilter) {
+		boolean result = (stringFilter == null || stringFilter.isEmpty())
+				|| obj.toString().toLowerCase().contains(stringFilter.toLowerCase());
+		return result;
 	}
 
 	public synchronized long count() {
