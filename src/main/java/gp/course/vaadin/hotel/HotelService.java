@@ -1,11 +1,12 @@
 package gp.course.vaadin.hotel;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,9 +14,12 @@ import java.util.logging.Logger;
 public class HotelService {
 
 	private static HotelService instance;
+	private static CategoryService categoryService = CategoryService.getInstance(); 
 	private static final Logger LOGGER = Logger.getLogger(HotelService.class.getName());
+	
+	private Random r = new Random(0);
 
-	private final HashMap<Long, Hotel> hotels = new HashMap<>();
+	private HashMap<Long, Hotel> hotels = new HashMap<>();
 	private long nextId = 0;
 
 	private HotelService() {
@@ -27,6 +31,15 @@ public class HotelService {
 			instance.ensureTestData();
 		}
 		return instance;
+	}
+	
+	public void refreshData() {
+		for (Entry<Long, Hotel> entry : hotels.entrySet()) {
+			Category category = entry.getValue().getCategory();
+			if (!categoryService.isExist(category)) {
+				entry.getValue().setCategory(null);
+			}
+		}
 	}
 
 	public synchronized List<Hotel> findAll() {
@@ -162,20 +175,22 @@ public class HotelService {
 					"Phakchai Hotel;2;https://www.booking.com/hotel/la/phakchai.en-gb.html;137 Ban Wattay Mueng Sikothabong Vientiane Laos, 01000 Vientiane, Laos",
 					"Phetmeuangsam Hotel;2;https://www.booking.com/hotel/la/phetmisay.en-gb.html;Ban Phanhxai, Xumnuea, Xam Nua, 01000 Xam Nua, Laos" };
 
-			Random r = new Random(0);
 			for (String hotel : hotelData) {
 				String[] split = hotel.split(";");
 				Hotel h = new Hotel();
 				h.setName(split[0]);
-				h.setRating(split[1]);
+				h.setRating(Integer.parseInt(split[1]));
 				h.setUrl(split[2]);
 				h.setAddress(split[3]);
-				h.setCategory(HotelCategory.values()[r.nextInt(HotelCategory.values().length)]);
-				int daysOld = 0 - r.nextInt(365 * 30);
-				h.setOperatesFrom((LocalDate.now().plusDays(daysOld)));
+				h.setCategory((Category) categoryService.findAll().toArray()[r.nextInt((int)categoryService.count())]);
+				h.setOperatesFrom(getOperatesFromDate());
 				save(h);
 			}
 		}
+	}
+	
+	private long getOperatesFromDate() {
+		return new Date().getTime() - r.nextInt(365 * 30 * 24 * 60 * 60 * 1000);
 	}
 
 }
