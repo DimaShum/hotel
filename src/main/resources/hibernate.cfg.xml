@@ -1,0 +1,20 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/demo_hotels</property>
+		
+		<property name="hibernate.connection.username">demo</property>
+		<property name="hibernate.connection.password">D1e2m3o4O1E3AE!3</property>
+		
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+		<property name="hibernate.id.new_generator_mappings">false</property>
+		
+<!-- 		<property name="show_sql">true</property> -->	
+<!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
+
+		<mapping class="gp.course.vaadin.hotel.Hotel"/>
+		<mapping class="gp.course.vaadin.hotel.Category"/>
+	</session-factory>
+</hibernate-configuration>

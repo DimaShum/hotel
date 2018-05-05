@@ -1,13 +1,18 @@
 package gp.course.vaadin.hotel;
 
+import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.ContextLoaderListener;
+
 import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.spring.annotation.EnableVaadin;
+import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -22,6 +27,7 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @SuppressWarnings("serial")
 @Theme("mytheme")
+@SpringUI
 public class HotelUI extends UI {
 	
 	final VerticalLayout layout = new VerticalLayout();
@@ -73,7 +79,7 @@ public class HotelUI extends UI {
     		getPage().setTitle("Hotel Page");
     		
     		hotelView.updateHotelList();
-    		hotelView.hotelForm.refreshCategory();
+//    		hotelView.hotelForm.refreshCategory();
     		
     		navigator.navigateTo(HOTEL_VIEW);
     	});
@@ -90,9 +96,18 @@ public class HotelUI extends UI {
       
       setContent(layout);
     }
+    
+    @WebListener
+    public static class HotelContextLoaderListener extends ContextLoaderListener {	
+    }
+    
+    
+    @Configuration
+    @EnableVaadin
+    public static class HotelConfiguration {
+    }
 
-    @WebServlet(urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = HotelUI.class, productionMode = false)
-    public static class NavigatorUIServlet extends VaadinServlet {
+    @WebServlet(urlPatterns = "/*", name = "HotelUIServlet", asyncSupported = true)
+    public static class HotelUIServlet extends SpringVaadinServlet {
     }
 }

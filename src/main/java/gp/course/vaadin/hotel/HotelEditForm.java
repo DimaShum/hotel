@@ -22,15 +22,20 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+import gp.course.vaadin.hotel.db.CategoryDAOImpl;
+import gp.course.vaadin.hotel.db.HotelDAOImpl;
+
+@SuppressWarnings("serial")
 public class HotelEditForm extends FormLayout {
 	
-	private static final long serialVersionUID = 1L;
+	private HotelDAOImpl hotelDAOImpl = HotelDAOImpl.getInstance();
+	private CategoryDAOImpl categoryDAOImpl = CategoryDAOImpl.getInstance();
+	
 	private HotelView ui;
-	private HotelService hotelService = HotelService.getInstance();
-	private CategoryService categoryService = CategoryService.getInstance();
 	private Hotel hotel;
+	
 	private Binder<Hotel> binder = new Binder<>(Hotel.class);
-
+	
 	private TextField name = new TextField("Name");
 	private TextField address = new TextField("Address");
 	private TextField rating = new TextField("Rating");
@@ -41,6 +46,7 @@ public class HotelEditForm extends FormLayout {
 	
 	private Button save = new Button("Save");
 	private Button close = new Button("Close");
+	
 	
 	public HotelEditForm(HotelView hotelView) {
 		this.ui = hotelView;
@@ -58,7 +64,6 @@ public class HotelEditForm extends FormLayout {
 		description.setWidth(50.0f, Unit.PERCENTAGE);
 		
 		prepareFields();
-		refreshCategory();
 		
 		save.setEnabled(false);
 		save.addClickListener(e -> save());
@@ -69,19 +74,18 @@ public class HotelEditForm extends FormLayout {
 		close.addClickListener(e -> exit());
 	}
 	
-	public void setHotel(Hotel hotel) {
-		this.hotel = hotel;
-		//refreshCategory();
-		binder.readBean(this.hotel);
-		
+	public void setHotel(Hotel h) {
+		this.hotel = h;
+		category.setItems(categoryDAOImpl.findAll(""));
+		binder.readBean(hotel);
+		focus();
 		setVisible(true);
-		
 	}
 	
 	private void save() {
 		try {
 			binder.writeBean(hotel);
-			hotelService.save(hotel);
+			hotelDAOImpl.save(hotel);
 			exit();
 			Notification.show("Hotel was saved successfully!", Type.TRAY_NOTIFICATION);
 		} catch(ValidationException e) {
@@ -95,12 +99,7 @@ public class HotelEditForm extends FormLayout {
 		ui.deleteHotel.setEnabled(false);
 		ui.editHotel.setEnabled(false);
 	}
-	
-	public void refreshCategory() {
-		category.setItems(categoryService.findAll());
-	}
-	
-	@SuppressWarnings("serial")
+
 	public void prepareFields() {
 		binder.forField(name)
 				.asRequired("Please enter a name")
@@ -129,8 +128,22 @@ public class HotelEditForm extends FormLayout {
 				.withConverter(new LocalDateToDateConverter())
 				.withConverter(new DateToLongConverter())
 				.bind(Hotel::getOperatesFrom, Hotel::setOperatesFrom);
+		
+		Category nullCategory = new Category();
+		nullCategory.setName("No category");
+		
 		binder.forField(category)
 				.asRequired("You should choose...")
+				.withValidator(new Validator<Category>() {
+					@Override
+					public ValidationResult apply(Category value, ValueContext context) {
+						if (value.getId() == null) {
+							return ValidationResult.error("You should choose any category!");
+						}
+						return ValidationResult.ok();
+					}
+				})
+ 				.withNullRepresentation(nullCategory)
 				.bind(Hotel::getCategory, Hotel::setCategory);
 		binder.forField(url)
 				.asRequired("Url may not be empty")
@@ -152,8 +165,9 @@ public class HotelEditForm extends FormLayout {
 		
 		
 		category.setDescription("Kind of hotel");
-		category.setEmptySelectionAllowed(false);
+		category.setEmptySelectionCaption("No category");
 		
+
 		url.setDescription("Hotel's website");
 		url.setPlaceholder("Type url");
 		

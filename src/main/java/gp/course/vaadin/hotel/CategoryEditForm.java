@@ -7,13 +7,17 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+
+import gp.course.vaadin.hotel.db.CategoryDAOImpl;
+
 import com.vaadin.ui.TextField;
 
 public class CategoryEditForm extends FormLayout {
 
 	private static final long serialVersionUID = 11L;
 	private CategoryView ui;
-	private CategoryService categoryService = CategoryService.getInstance();
+	private CategoryDAOImpl categoryDAOImpl = CategoryDAOImpl.getInstance();
+//	private CategoryService categoryService = CategoryService.getInstance();
 	private Category category;
 	private Binder<Category> binder = new Binder<>(Category.class);
 	
@@ -55,7 +59,8 @@ public class CategoryEditForm extends FormLayout {
 	private void save() {
 		try {
 			binder.writeBean(category);
-			categoryService.save(category);
+			categoryDAOImpl.save(category);
+//			categoryService.save(category);
 			exit();
 			Notification.show("Category was saved successfully!", Type.TRAY_NOTIFICATION);
 		} catch(ValidationException e) {

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet author="melamory" id="init">
+		<!-- ================================= Hotels ================================= -->
+		<createTable tableName="HOTEL">
+			<column autoIncrement="true" name="ID" type="BIGINT">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="OPTLOCK" type="BIGINT" />
+			<column name="NAME" type="VARCHAR(255)" />
+			<column name="ADDRESS" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="RATING" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="OPERATES_FROM" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CATEGORY" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="URL" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet author="dima_shum_" id="category_create">
+		<!-- ================================= Categories ================================= -->
+		<createTable tableName="CATEGORY">
+			<column autoIncrement="true" name="ID" type="BIGINT">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="OPTLOCK" type="BIGINT" />
+			<column name="NAME" type="VARCHAR(255)" />
+		</createTable>
+		<rollback>
+			drop table CATEGORY;
+		</rollback>
+	</changeSet>
+	
+	<changeSet author="dima_shum_" id="hotel_structure_update">
+		<!-- ================================= Hotel_structure_update ================================= -->
+		<modifyDataType tableName="HOTEL" columnName="CATEGORY" newDataType="BIGINT"/>
+		<addForeignKeyConstraint baseColumnNames="CATEGORY"
+				baseTableName="HOTEL"
+				constraintName="FK_HOTEL_CATEGORY"
+				referencedColumnNames="ID"
+				referencedTableName="CATEGORY"
+				onDelete="SET NULL"/>
+		<addColumn tableName="HOTEL">
+			<column name="DESCRIPTION" type="VARCHAR(255)"></column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet author="dima_shum_" id="insert_data">
+		<insert tableName="CATEGORY">
+			<column name="ID" value="1"/>
+			<column name="NAME" value="Hotel"/>
+			<column name="OPTLOCK" value="0"></column>
+		</insert>
+		<insert tableName="CATEGORY">
+			<column name="ID" value="2"/>
+			<column name="NAME" value="Hostel"/>
+			<column name="OPTLOCK" value="0"></column>
+		</insert>
+		<insert tableName="CATEGORY">
+			<column name="ID" value="3"/>
+			<column name="NAME" value="GuestHouse"/>
+			<column name="OPTLOCK" value="0"></column>
+		</insert>
+		
+		<insert tableName="HOTEL">
+			<column name="ID" value="1"/>
+			<column name="OPTLOCK" value="0"/>
+			<column name="NAME" value="Chalouvanh Hotel"/>
+			<column name="ADDRESS" value="13 road, Ban Phonesavanh, Pakse District, 01000 Pakse, Laos"/>
+			<column name="RATING" value="2"/>
+			<column name="OPERATES_FROM" value="1000000000000"/>
+			<column name="CATEGORY" value="1"/>
+			<column name="URL" value="https://www.booking.com/hotel/la/chalouvanh.en-gb.html"/>
+		</insert>
+		<insert tableName="HOTEL">
+			<column name="ID" value="2"/>
+			<column name="OPTLOCK" value="0"/>
+			<column name="NAME" value="Dream Home Hostel 1"/>
+			<column name="ADDRESS" value="049 Sihome Road, Ban Sihome, 01000 Vientiane, Laos"/>
+			<column name="RATING" value="1"/>
+			<column name="OPERATES_FROM" value="1200000000000"/>
+			<column name="CATEGORY" value="1"/>
+			<column name="URL" value="https://www.booking.com/hotel/la/getaway-backpackers-hostel.en-gb.html"/>
+		</insert>
+		<insert tableName="HOTEL">
+			<column name="ID" value="3"/>
+			<column name="OPTLOCK" value="0"/>
+			<column name="NAME" value="Mixok Inn"/>
+			<column name="ADDRESS" value="188 Sethathirate Road , Mixay Village , Chanthabuly District, 01000 Vientiane, Laos"/>
+			<column name="RATING" value="2"/>
+			<column name="OPERATES_FROM" value="140000000000"/>
+			<column name="CATEGORY" value="3"/>
+			<column name="URL" value="https://www.booking.com/hotel/la/mixok-inn.en-gb.html"/>
+		</insert>
+	</changeSet>
+</databaseChangeLog>

@@ -17,10 +17,12 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 
+import gp.course.vaadin.hotel.db.HotelDAOImpl;
+
 @SuppressWarnings("serial")
 public class HotelView extends VerticalLayout implements View {
 
-	final HotelService hotelService = HotelService.getInstance();
+	final HotelDAOImpl hotelDAOImpl = HotelDAOImpl.getInstance();
 	
 	final TextField filterByName = new TextField();
 	final TextField filterByAddress = new TextField();
@@ -31,10 +33,6 @@ public class HotelView extends VerticalLayout implements View {
 	final HotelEditForm hotelForm = new HotelEditForm(this);
 	
 	public HotelView() {
-		
-		
-		setSizeFull();
-		setMargin(false);
 		
 		HorizontalLayout controlsHotel = new HorizontalLayout();
         controlsHotel.addComponents(filterByName, filterByAddress, addHotel, deleteHotel, editHotel);
@@ -70,23 +68,25 @@ public class HotelView extends VerticalLayout implements View {
         hotelGrid.setWidth(100, Unit.PERCENTAGE);
         
         hotelGrid.setSelectionMode(SelectionMode.MULTI);
-        hotelGrid.asMultiSelect().addValueChangeListener(e ->{
-        	if (e.getValue() == null || !e.getValue().isEmpty()) {
+        hotelGrid.asMultiSelect().addSelectionListener(e -> {
+        	if (e.getAllSelectedItems().isEmpty()) {
         		deleteHotel.setEnabled(false);
         		editHotel.setEnabled(false);
         	}
-        	if (e.getValue().size() == 1) {
+        	if (e.getAllSelectedItems().size() == 1) {
         		deleteHotel.setEnabled(true);
         		editHotel.setEnabled(true);
-        		editHotel.addClickListener(ev -> {
-        			hotelForm.setHotel(e.getValue().iterator().next());
-                });
+        		hotelForm.setHotel(e.getAllSelectedItems().iterator().next());
+        		
         	}
-        	if (e.getValue().size() > 1) {
+        	if (e.getAllSelectedItems().size() > 1) {
         		deleteHotel.setEnabled(true);
         		editHotel.setEnabled(false);
         	}
-        	hotelForm.setHotel(new Hotel());
+        	
+        	editHotel.addClickListener(event -> {
+    			hotelForm.setVisible(true);
+    		});
         	hotelForm.setVisible(false);
         });
 		
@@ -94,16 +94,15 @@ public class HotelView extends VerticalLayout implements View {
         	Set<Hotel> delCandidates = new HashSet<>();
         	delCandidates = hotelGrid.getSelectedItems();
         	for (Hotel hotel : delCandidates) {
-        		hotelService.delete(hotel);
+        		hotelDAOImpl.delete(hotel);
         	}
         	deleteHotel.setEnabled(false);
         	editHotel.setEnabled(false);
         	updateHotelList();
+        	
         });
         
         hotelForm.setVisible(false);
-        
-        //hotelForm.setWidth(50.0f, Unit.PERCENTAGE);
         
         HorizontalLayout content = new HorizontalLayout();
         content.addComponents(hotelGrid, hotelForm);
@@ -111,11 +110,12 @@ public class HotelView extends VerticalLayout implements View {
         content.setWidth(100.0f, Unit.PERCENTAGE);
         
         addComponents(controlsHotel, content);
+        setSizeFull();
+		setMargin(false);
 	}
 	
 	public void updateHotelList() {
-    	hotelService.refreshData();
-    	List<Hotel> hotelList = hotelService.findAll(filterByName.getValue(), filterByAddress.getValue());
+		List<Hotel> hotelList = hotelDAOImpl.findAll(filterByName.getValue(), filterByAddress.getValue());
     	hotelGrid.setItems(hotelList);
     	hotelForm.setVisible(false);
     }

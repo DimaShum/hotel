@@ -11,12 +11,16 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import gp.course.vaadin.hotel.db.CategoryDAOImpl;
+
 import com.vaadin.ui.Grid.SelectionMode;
 
 @SuppressWarnings("serial")
 public class CategoryView extends VerticalLayout implements View {
 	 
-	final CategoryService categoryService = CategoryService.getInstance();
+	final CategoryDAOImpl categoryDAOImpl = CategoryDAOImpl.getInstance();
+//	final CategoryService categoryService = CategoryService.getInstance();
 		
 	final TextField filterByName = new TextField();
 	final Button addCategory = new Button("Add category");
@@ -70,7 +74,8 @@ public class CategoryView extends VerticalLayout implements View {
         	Set<Category> delCandidates = new HashSet<>();
         	delCandidates = categoryGrid.getSelectedItems();
         	for (Category category : delCandidates) {
-        		categoryService.delete(category);
+        		categoryDAOImpl.delete(category);
+//        		categoryService.delete(category);
         	}
         	deleteCategory.setEnabled(false);
         	editCategory.setEnabled(false);
@@ -90,7 +95,8 @@ public class CategoryView extends VerticalLayout implements View {
 	}
 
 	public void updateCategoryList() {
-    	List<Category> categoryList = categoryService.findAll(filterByName.getValue());
+    	List<Category> categoryList = categoryDAOImpl.findAll(filterByName.getValue());
+//    	List<Category> categoryList = categoryService.findAll(filterByName.getValue());
     	categoryGrid.setItems(categoryList);
     	categoryForm.setVisible(false);
     }

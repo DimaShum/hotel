@@ -2,24 +2,71 @@ package gp.course.vaadin.hotel;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
 @SuppressWarnings("serial")
+@Entity
+@Table(name = "HOTEL")
+@NamedQueries({
+    @NamedQuery(name = "Hotel.byNameAndByAddress",
+    		query = "SELECT x FROM Hotel AS x WHERE LOWER(x.name) LIKE :filterByName AND LOWER(x.address) LIKE :filterByAddress")
+})
 public class Hotel implements Serializable, Cloneable {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
+	@Version
+	@Column(name = "OPTLOCK")
+	private Long version;
+	
+	@Column(name = "NAME")
 	private String name = "";
-
+	
+	@Column(name = "ADDRESS")
 	private String address = "";
-
+	
+	@Column(name = "RATING")
 	private Integer rating;
-
+	
+	@Column(name = "OPERATES_FROM")
 	private Long operatesFrom;
 
+	@ManyToOne
+	@JoinColumn(name = "CATEGORY")
 	private Category category;
 	
+	@Column(name = "URL")
 	private String url;
 	
+	@Column(name = "DESCRIPTION")
 	private String description;
+	
+	public Hotel() {
+	}
+	
+//	public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, Category category, String url, String description) {
+//		super();
+//		this.id = id;
+//		this.name = name;
+//		this.address = address;
+//		this.rating = rating;
+//		this.operatesFrom = operatesFrom;
+//		this.category = category;
+//		this.url = url;
+//		this.description = description;
+//	}
 
 	public boolean isPersisted() {
 		return id != null;
@@ -45,8 +92,7 @@ public class Hotel implements Serializable, Cloneable {
 		return super.hashCode();
 	}
 
-	public Hotel() {
-	}
+
 
 	public Long getId() {
 		return id;
@@ -113,15 +159,5 @@ public class Hotel implements Serializable, Cloneable {
 		this.description = description;
 	}
 
-	public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, Category category, String url, String description) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.address = address;
-		this.rating = rating;
-		this.operatesFrom = operatesFrom;
-		this.category = category;
-		this.url = url;
-		this.description = description;
-	}
+
 }
