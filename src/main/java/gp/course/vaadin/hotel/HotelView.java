@@ -8,9 +8,11 @@ import java.util.Set;
 
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -29,13 +31,17 @@ public class HotelView extends VerticalLayout implements View {
 	final Button addHotel = new Button("Add hotel");
 	final Button deleteHotel = new Button("Delete hotel");
 	final Button editHotel = new Button("Edit hotel");
+	final Button bulkUpdate = new Button("Bulk update");
 	final Grid<Hotel> hotelGrid = new Grid<>(Hotel.class);
 	final HotelEditForm hotelForm = new HotelEditForm(this);
+	
+	private BulkUpdateForm bulkUpdateForm = new BulkUpdateForm(this);
+	private PopupView popup = new PopupView(null, bulkUpdateForm);
 	
 	public HotelView() {
 		
 		HorizontalLayout controlsHotel = new HorizontalLayout();
-        controlsHotel.addComponents(filterByName, filterByAddress, addHotel, deleteHotel, editHotel);
+        controlsHotel.addComponents(filterByName, filterByAddress, addHotel, deleteHotel, editHotel, bulkUpdate);
         
         filterByName.setPlaceholder("Filter by name");
         filterByAddress.setPlaceholder("Filter by address");
@@ -44,6 +50,7 @@ public class HotelView extends VerticalLayout implements View {
 		
 		deleteHotel.setEnabled(false);
 		editHotel.setEnabled(false);
+		bulkUpdate.setEnabled(false);
 		
 		filterByName.addValueChangeListener(e -> updateHotelList());
         filterByName.setValueChangeMode(ValueChangeMode.LAZY);
@@ -72,21 +79,20 @@ public class HotelView extends VerticalLayout implements View {
         	if (e.getAllSelectedItems().isEmpty()) {
         		deleteHotel.setEnabled(false);
         		editHotel.setEnabled(false);
+        		bulkUpdate.setEnabled(false);
         	}
         	if (e.getAllSelectedItems().size() == 1) {
         		deleteHotel.setEnabled(true);
         		editHotel.setEnabled(true);
+        		bulkUpdate.setEnabled(false);
         		hotelForm.setHotel(e.getAllSelectedItems().iterator().next());
-        		
         	}
         	if (e.getAllSelectedItems().size() > 1) {
         		deleteHotel.setEnabled(true);
         		editHotel.setEnabled(false);
+        		bulkUpdate.setEnabled(true);
         	}
         	
-        	editHotel.addClickListener(event -> {
-    			hotelForm.setVisible(true);
-    		});
         	hotelForm.setVisible(false);
         });
 		
@@ -102,6 +108,22 @@ public class HotelView extends VerticalLayout implements View {
         	
         });
         
+        editHotel.addClickListener(e -> {
+			hotelForm.setVisible(true);
+		});
+        
+        bulkUpdate.addClickListener(e -> {
+        	popup.setPopupVisible(true);
+        	popup.setHideOnMouseOut(false);
+        	hotelForm.setVisible(false);
+        	
+        	bulkUpdateForm.setSelectedHotels(hotelGrid.getSelectedItems());
+        });
+        
+        AbsoluteLayout popupLayer = new AbsoluteLayout();
+        popupLayer.setSizeFull();
+    	popupLayer.addComponent(popup, "left: 50%");
+        
         hotelForm.setVisible(false);
         
         HorizontalLayout content = new HorizontalLayout();
@@ -109,7 +131,7 @@ public class HotelView extends VerticalLayout implements View {
         content.setSizeFull();
         content.setWidth(100.0f, Unit.PERCENTAGE);
         
-        addComponents(controlsHotel, content);
+		addComponents(controlsHotel, popupLayer, content);
         setSizeFull();
 		setMargin(false);
 	}
@@ -118,5 +140,7 @@ public class HotelView extends VerticalLayout implements View {
 		List<Hotel> hotelList = hotelDAOImpl.findAll(filterByName.getValue(), filterByAddress.getValue());
     	hotelGrid.setItems(hotelList);
     	hotelForm.setVisible(false);
+    	
+		popup.setPopupVisible(false);
     }
 }

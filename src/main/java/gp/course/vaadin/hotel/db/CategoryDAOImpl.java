@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel.db;
+      package gp.course.vaadin.hotel.db;
 
 import java.util.Collections;
 import java.util.List;
