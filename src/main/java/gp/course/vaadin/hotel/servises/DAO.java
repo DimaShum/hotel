@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel.db;
+package gp.course.vaadin.hotel.servises;
 
 public interface DAO<T> {
 	

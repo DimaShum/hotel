@@ -1,4 +1,4 @@
-      package gp.course.vaadin.hotel.db;
+      package gp.course.vaadin.hotel.servises;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-import gp.course.vaadin.hotel.Category;
+import gp.course.vaadin.hotel.entities.Category;
+import gp.course.vaadin.hotel.servises.CategoryDAO;
 
 public class CategoryDAOImpl implements CategoryDAO {
 

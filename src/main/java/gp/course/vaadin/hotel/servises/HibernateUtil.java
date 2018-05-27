@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel.db;
+package gp.course.vaadin.hotel.servises;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

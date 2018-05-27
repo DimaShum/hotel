@@ -18,6 +18,9 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import gp.course.vaadin.hotel.views.CategoryView;
+import gp.course.vaadin.hotel.views.HotelView;
+
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
  * (or tab) or some part of a html page where a Vaadin application is embedded.
@@ -39,31 +42,7 @@ public class HotelUI extends UI {
 	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-    	//MenuBar MODE
-//    	
-//    	hotelView.setVisible(true);
-//		categoryView.setVisible(false);
-//    	
-//    	MenuBar menu = new MenuBar();
-//    	menu.addItem("Hotel", VaadinIcons.BUILDING, e -> {
-//    		hotelView.updateHotelList();
-//    		hotelView.hotelForm.refreshCategory();
-//    		hotelView.setVisible(true);
-//    		categoryView.setVisible(false);
-//    	});
-//    	menu.addItem("Category",VaadinIcons.ACADEMY_CAP, e -> {
-//    		hotelView.setVisible(false);
-//    		categoryView.updateCategoryList();
-//    		categoryView.setVisible(true);
-//    	});
-//    	menu.setStyleName(ValoTheme.MENUBAR_BORDERLESS);
-//        
-//        layout.addComponents(menu, hotelView, categoryView);
-//        layout.setWidth(100.0f, Unit.PERCENTAGE);
-//        
-//        setContent(layout);
     	
-    	//Navigator MODE
     	getPage().setTitle("Hotel Page");
     	
     	VerticalLayout content = new VerticalLayout();
@@ -79,7 +58,6 @@ public class HotelUI extends UI {
     		getPage().setTitle("Hotel Page");
     		
     		hotelView.updateHotelList();
-//    		hotelView.hotelForm.refreshCategory();
     		
     		navigator.navigateTo(HOTEL_VIEW);
     	});

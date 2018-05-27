@@ -1,18 +1,13 @@
-package gp.course.vaadin.hotel;
-
-import java.io.Serializable;
+package gp.course.vaadin.hotel.entities;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @SuppressWarnings("serial")
 @Entity
@@ -21,15 +16,7 @@ import javax.persistence.Version;
     @NamedQuery(name = "Hotel.byNameAndByAddress",
     		query = "SELECT x FROM Hotel AS x WHERE LOWER(x.name) LIKE :filterByName AND LOWER(x.address) LIKE :filterByAddress")
 })
-public class Hotel implements Serializable, Cloneable {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@Version
-	@Column(name = "OPTLOCK")
-	private Long version;
+public class Hotel extends AbstractEntity {
 	
 	@Column(name = "NAME")
 	private String name = "";
@@ -47,6 +34,9 @@ public class Hotel implements Serializable, Cloneable {
 	@JoinColumn(name = "CATEGORY")
 	private Category category;
 	
+	@Embedded
+	private PaymentMethod paymentMethod;
+		
 	@Column(name = "URL")
 	private String url;
 	
@@ -54,52 +44,6 @@ public class Hotel implements Serializable, Cloneable {
 	private String description;
 	
 	public Hotel() {
-	}
-	
-//	public Hotel(Long id, String name, String address, Integer rating, Long operatesFrom, Category category, String url, String description) {
-//		super();
-//		this.id = id;
-//		this.name = name;
-//		this.address = address;
-//		this.rating = rating;
-//		this.operatesFrom = operatesFrom;
-//		this.category = category;
-//		this.url = url;
-//		this.description = description;
-//	}
-
-	public boolean isPersisted() {
-		return id != null;
-	}
-
-	@Override
-	public String toString() {
-		return name + " " + rating +"stars " + address;
-	}
-
-	@Override
-	protected Hotel clone() throws CloneNotSupportedException {
-		return (Hotel) super.clone();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -126,7 +70,6 @@ public class Hotel implements Serializable, Cloneable {
 		this.rating = rating;
 	}
 
-	
 	public Long getOperatesFrom() {
 		return operatesFrom;
 	}
@@ -142,6 +85,14 @@ public class Hotel implements Serializable, Cloneable {
 	public void setCategory(Category category) {
 		this.category = category;
 	}	
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
 
 	public String getUrl() {
 		return url;
@@ -159,5 +110,8 @@ public class Hotel implements Serializable, Cloneable {
 		this.description = description;
 	}
 
-
+	@Override
+	public String toString() {
+		return name + " " + rating +"stars " + address;
+	}
 }

@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel;
+package gp.course.vaadin.hotel.views.forms;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -29,7 +29,10 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import gp.course.vaadin.hotel.db.CategoryDAOImpl;
+import gp.course.vaadin.hotel.entities.Category;
+import gp.course.vaadin.hotel.entities.Hotel;
+import gp.course.vaadin.hotel.servises.CategoryDAOImpl;
+import gp.course.vaadin.hotel.views.HotelView;
 
 @SuppressWarnings("serial")
 public class BulkUpdateForm extends VerticalLayout {
@@ -76,7 +79,7 @@ public class BulkUpdateForm extends VerticalLayout {
 		
 		Field[] fields = hotel.getClass().getDeclaredFields();
 		for (Field f : fields) {
-			if (!f.getName().equals("id") && !f.getName().equals("version")) {
+			if (!f.getName().equals("id") && !f.getName().equals("version") && !f.getName().equals("paymentMethod")) {
 				namesOfFields.add(f.getName());
 			}
 		}

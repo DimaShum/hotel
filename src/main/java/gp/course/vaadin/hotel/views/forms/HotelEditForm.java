@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel;
+package gp.course.vaadin.hotel.views.forms;
 
 
 import java.time.LocalDate;
@@ -12,6 +12,7 @@ import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
@@ -22,8 +23,11 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-import gp.course.vaadin.hotel.db.CategoryDAOImpl;
-import gp.course.vaadin.hotel.db.HotelDAOImpl;
+import gp.course.vaadin.hotel.entities.Category;
+import gp.course.vaadin.hotel.entities.Hotel;
+import gp.course.vaadin.hotel.servises.CategoryDAOImpl;
+import gp.course.vaadin.hotel.servises.HotelDAOImpl;
+import gp.course.vaadin.hotel.views.HotelView;
 
 @SuppressWarnings("serial")
 public class HotelEditForm extends FormLayout {
@@ -41,27 +45,32 @@ public class HotelEditForm extends FormLayout {
 	private TextField rating = new TextField("Rating");
 	private DateField operatesFrom = new DateField("OperatesFrom");
 	private NativeSelect<Category> category = new NativeSelect<>("Category");
+	private PaymentMethodField paymentMethod = new PaymentMethodField("Payment method");
 	private TextField url = new TextField("URL");
 	private TextArea description = new TextArea("Description");
 	
-	private Button save = new Button("Save");
-	private Button close = new Button("Close");
+	HorizontalLayout buttons = new HorizontalLayout();
+	
+	private Button save = new Button("Save", VaadinIcons.ENTER_ARROW);
+	private Button close = new Button("Close", VaadinIcons.CLOSE_CIRCLE_O);
 	
 	
 	public HotelEditForm(HotelView hotelView) {
 		this.ui = hotelView;
-				
-		HorizontalLayout buttons = new HorizontalLayout();
+		
+		name.setWidth(100, Unit.PERCENTAGE);
+		address.setWidth(100, Unit.PERCENTAGE);
+		rating.setWidth(100, Unit.PERCENTAGE);
+		operatesFrom.setWidth(100, Unit.PERCENTAGE);
+		category.setWidth(100, Unit.PERCENTAGE);
+		paymentMethod.setWidth(100, Unit.PERCENTAGE);
+		url.setWidth(100, Unit.PERCENTAGE);
+		description.setWidth(100, Unit.PERCENTAGE);
+		
 		buttons.addComponents(save, close);
-		
-		addComponents(name, address, rating, operatesFrom, category, url, description, buttons);
-		
-		name.setWidth(50.0f, Unit.PERCENTAGE);
-		address.setWidth(50.0f, Unit.PERCENTAGE);
-		rating.setWidth(50.0f, Unit.PERCENTAGE);
-		operatesFrom.setWidth(50.0f, Unit.PERCENTAGE);
-		url.setWidth(50.0f, Unit.PERCENTAGE);
-		description.setWidth(50.0f, Unit.PERCENTAGE);
+		buttons.setWidth(100, Unit.PERCENTAGE);
+		save.setWidth(100, Unit.PERCENTAGE);
+		close.setWidth(100, Unit.PERCENTAGE);
 		
 		prepareFields();
 		
@@ -72,6 +81,10 @@ public class HotelEditForm extends FormLayout {
 				e -> save.setEnabled(binder.isValid()));
 		
 		close.addClickListener(e -> exit());
+		
+		addComponents(name, address, rating, operatesFrom, category, paymentMethod, url, description, buttons);
+		setSizeFull();
+		setMargin(false);
 	}
 	
 	public void setHotel(Hotel h) {
@@ -96,8 +109,8 @@ public class HotelEditForm extends FormLayout {
 	private void exit() {
 		ui.updateHotelList();
 		setVisible(false);
-		ui.deleteHotel.setEnabled(false);
-		ui.editHotel.setEnabled(false);
+		ui.delete.setEnabled(false);
+		ui.edit.setEnabled(false);
 	}
 
 	public void prepareFields() {
@@ -145,6 +158,8 @@ public class HotelEditForm extends FormLayout {
 				})
  				.withNullRepresentation(nullCategory)
 				.bind(Hotel::getCategory, Hotel::setCategory);
+		binder.forField(paymentMethod)
+				.bind(Hotel::getPaymentMethod, Hotel::setPaymentMethod);
 		binder.forField(url)
 				.asRequired("Url may not be empty")
 				.bind(Hotel::getUrl, Hotel::setUrl);

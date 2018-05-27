@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel.depricated;
+package gp.course.vaadin.hotel.deprecated;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,8 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import gp.course.vaadin.hotel.Category;
+
+import gp.course.vaadin.hotel.entities.Category;
 
 public class CategoryService {
 	

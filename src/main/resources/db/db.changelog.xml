@@ -107,4 +107,10 @@
 			<column name="URL" value="https://www.booking.com/hotel/la/mixok-inn.en-gb.html"/>
 		</insert>
 	</changeSet>
+	<changeSet id="updateHotelTable" author="dima_shum_">
+		<addColumn tableName="HOTEL">
+			<column name="PAYMENT_METHOD" type="VARCHAR(255)"></column>
+			<column name="PERCENT" type="INT"></column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

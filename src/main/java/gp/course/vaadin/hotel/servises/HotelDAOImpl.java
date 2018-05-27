@@ -1,4 +1,4 @@
-package gp.course.vaadin.hotel.db;
+package gp.course.vaadin.hotel.servises;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -7,8 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-import gp.course.vaadin.hotel.Hotel;
+import gp.course.vaadin.hotel.entities.Hotel;
 
 public class HotelDAOImpl implements HotelDAO {
 	
@@ -77,13 +76,17 @@ public class HotelDAOImpl implements HotelDAO {
 	@Override
 	public Long count() {
 		try(Session session = sessionFactory.openSession()) {
-			return (Long) session
+			return (long) session
 					.createQuery("select count(*) from Hotel")
 					.uniqueResult();
 		} catch(HibernateException e) {
 			logger.info("Count error: " + e.getLocalizedMessage());
 			return null;
 		}
+	}
+	
+	public long count(String nameFilter, String addressFilter) {
+		return findAll(nameFilter, addressFilter).size();
 	}
 
 	@SuppressWarnings("unchecked")
